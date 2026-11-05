@@ -12,13 +12,9 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 #include "../mem_writes.h"
 #include "../runtime.h"
-
-// إعلان الدالة البرمجية لنظام الـ RTL الناقصة
-namespace rtl_text { void language_pack_opened(const std::string& host_path); }
 
 namespace {
 
@@ -51,6 +47,10 @@ uint32_t g_next_handle = 1;
 
 std::string host_path_exact(const std::string& guest);
 
+// The Wii U's file system ignores case and the game relies on it (it opens
+// "Common/Audiores/c_king.bfsar"; the disc has "AudioRes"). Android's shared storage ignores case
+// on most devices but not on all (seen on an older device with Android 16), so a game data path
+// that doesn't exist as spelled is looked up folder by folder ignoring case; results are kept.
 std::string case_insensitive(const std::string& root, const std::string& path) {
     struct stat st;
     if (stat(path.c_str(), &st) == 0 || path.size() <= root.size()) return path;
@@ -85,8 +85,12 @@ std::string case_insensitive(const std::string& root, const std::string& path) {
 std::string host_path(const std::string& guest) {
     std::string r = host_path_exact(guest);
     const std::string& g = config::game_dir;
+    // a mod's replacement for a game data file (content packs, the translation's message packs):
+    // <overlay>/content/... instead of <game>/content/..., from the first overlay that has the file
+    // (config::content_overlay: their folders, one per line)
     const std::string gc = g + "/content/";
     if (!config::content_overlay.empty() && r.compare(0, gc.size(), gc) == 0) {
+        // (set before the game starts)
         static const std::vector<std::string> overlays = [] {
             std::vector<std::string> v;
             const std::string& all = config::content_overlay;
@@ -122,7 +126,7 @@ std::string host_path_exact(const std::string& guest) {
     if (map("/vol/code", config::game_dir + "/code")) return p;
     if (map("/vol/meta", config::game_dir + "/meta")) return p;
     if (map("/vol/save", config::save_dir)) return p;
-    if (!p.empty() && p[0] != '/') return config::game_dir + "/content/" + p;
+    if (!p.empty() && p[0] != '/') return config::game_dir + "/content/" + p;  // relative to cwd (/vol/content)
     return config::game_dir + p;
 }
 
@@ -148,10 +152,6 @@ int32_t open_file(const std::string& gpath, const std::string& mode, uint32_t ou
     FILE* f = fopen(hp.c_str(), m.c_str());
     TRACE("[fs] open %s (%s) -> %s", gpath.c_str(), mode.c_str(), f ? "ok" : "not found");
     if (!f) return FS_NOT_FOUND;
-    
-    // ⚡ الجسر البرمجي الناقص: إبلاغ نظام الـ RTL فور فتح ملفات اللغة والخطوط
-    rtl_text::language_pack_opened(hp);
-
     std::lock_guard<std::mutex> lk(g_fs_mutex);
     uint32_t h = g_next_handle++;
     g_files[h] = {f, gpath, m};
@@ -193,7 +193,7 @@ HLE(coreinit, FSDelClient) { ret(c, 0); }
 HLE(coreinit, FSInitCmdBlock) { memset(mem::ptr(arg(c, 0)), 0, 0xA80); }
 HLE(coreinit, FSSetCmdPriority) { ret(c, 0); }
 HLE(coreinit, FSSetStateChangeNotification) {}
-HLE(coreinit, FSGetVolumeState) { ret(c, 1); }
+HLE(coreinit, FSGetVolumeState) { ret(c, 1); }  // FS_VOLSTATE_READY
 HLE(coreinit, FSGetLastError) { ret(c, 0); }
 HLE(coreinit, FSGetLastErrorCodeForViewer) { ret(c, 0); }
 HLE(coreinit, FSGetCwd) { mem::write_cstr(arg(c, 2), "/vol/content", arg(c, 3)); ret(c, FS_OK); }
@@ -218,9 +218,163 @@ HLE(coreinit, FSReadFile) {
     if (!f || size == 0) { ret(c, 0); return; }
     size_t n;
     {
-        BlockingScope b;
+        BlockingScope b;  // the calling thread waits for the disc; others on its core run
         n = fread(mem::ptr(dst), 1, (size_t)size * count, f);
-        memw::mark(dst, (uint32_t)n);
+        memw::mark(dst, (uint32_t)n);  // DMA on the console: no flush follows
     }
     ret(c, (uint32_t)(n / size));
+}
+
+HLE(coreinit, FSWriteFile) {
+    uint32_t src = arg(c, 2), size = arg(c, 3), count = arg(c, 4);
+    FILE* f = file(arg(c, 5));
+    if (!f || size == 0) { ret(c, 0); return; }
+    size_t n;
+    {
+        BlockingScope b;
+        n = fwrite(mem::ptr(src), 1, (size_t)size * count, f);
+        fflush(f);
+    }
+    ret(c, (uint32_t)(n / size));
+}
+
+HLE(coreinit, FSSetPosFile) {
+    FILE* f = file(arg(c, 2));
+    ret(c, f && fseek(f, arg(c, 3), SEEK_SET) == 0 ? FS_OK : FS_ACCESS_ERROR);
+}
+
+HLE(coreinit, FSGetStat) { ret(c, stat_path(mem::read_cstr(arg(c, 2)), arg(c, 3))); }
+
+HLE(coreinit, FSGetStatFile) {
+    FILE* f = file(arg(c, 2));
+    struct stat st;
+    if (!f || fstat(fileno(f), &st) != 0) { ret(c, FS_NOT_FOUND); return; }
+    fill_stat(arg(c, 3), st);
+    ret(c, FS_OK);
+}
+
+HLE(coreinit, FSOpenDir) { ret(c, open_dir(mem::read_cstr(arg(c, 2)), arg(c, 3))); }
+
+HLE(coreinit, FSReadDir) {
+    uint32_t out = arg(c, 3);
+    std::lock_guard<std::mutex> lk(g_fs_mutex);
+    auto it = g_dirs.find(arg(c, 2));
+    if (it == g_dirs.end()) { ret(c, FS_NOT_DIR); return; }
+    struct dirent* de;
+    while ((de = readdir(it->second.d))) {
+        if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")) continue;
+        struct stat st;
+        if (stat((it->second.path + "/" + de->d_name).c_str(), &st) != 0) continue;
+        fill_stat(out, st);
+        mem::write_cstr(out + 0x64, de->d_name, 256);
+        it->second.read++;
+        ret(c, FS_OK);
+        return;
+    }
+    ret(c, FS_END);
+}
+
+HLE(coreinit, FSCloseDir) {
+    std::lock_guard<std::mutex> lk(g_fs_mutex);
+    auto it = g_dirs.find(arg(c, 2));
+    if (it != g_dirs.end()) {
+        closedir(it->second.d);
+        g_dirs.erase(it);
+    }
+    ret(c, FS_OK);
+}
+
+// ---------------------------------------------------------------- nn_save
+// Saves live in <save dir>/<account slot or "common">/<path>
+static std::string save_path(uint32_t slot, const std::string& p) {
+    std::string base = slot == 0xFF ? "/vol/save/common" : "/vol/save/user";
+    return base + (p.empty() || p[0] == '/' ? "" : "/") + p;
+}
+
+HLE(nn_save, SAVEInit) { ret(c, 0); }
+HLE(nn_save, SAVEShutdown) {}
+HLE(nn_save, SAVEInitSaveDir) {
+    make_parent_dirs(host_path(save_path(arg(c, 0), "x")));
+    ret(c, 0);
+}
+HLE(nn_save, SAVEFlushQuota) { ret(c, 0); }
+HLE(nn_save, SAVEOpenFile) {
+    ret(c, open_file(save_path(arg(c, 2), mem::read_cstr(arg(c, 3))), mem::read_cstr(arg(c, 4)), arg(c, 5)));
+}
+HLE(nn_save, SAVEGetStat) { ret(c, stat_path(save_path(arg(c, 2), mem::read_cstr(arg(c, 3))), arg(c, 4))); }
+HLE(nn_save, SAVEOpenDir) {
+    std::string gp = save_path(arg(c, 2), mem::read_cstr(arg(c, 3)));
+    make_parent_dirs(host_path(gp) + "/");
+    ret(c, open_dir(gp, arg(c, 4)));
+}
+
+// ---------------------------------------------------------------- save states: open files
+#include <algorithm>
+#include <vector>
+
+#include "../savestate.h"
+void fs_ss_save(ss::Writer& w) {
+    std::lock_guard<std::mutex> lk(g_fs_mutex);
+    w.u32(g_next_handle);
+    std::vector<uint32_t> keys;
+    for (auto& [h, f] : g_files) keys.push_back(h);
+    std::sort(keys.begin(), keys.end());
+    w.u32((uint32_t)keys.size());
+    for (uint32_t h : keys) {
+        OpenFile& f = g_files[h];
+        w.u32(h);
+        w.str(f.path);
+        w.str(f.mode);
+        w.u64((uint64_t)ftello(f.f));
+    }
+    keys.clear();
+    for (auto& [h, d] : g_dirs) keys.push_back(h);
+    std::sort(keys.begin(), keys.end());
+    w.u32((uint32_t)keys.size());
+    for (uint32_t h : keys) {
+        w.u32(h);
+        w.str(g_dirs[h].gpath);
+        w.u32(g_dirs[h].read);
+    }
+}
+
+void fs_ss_load(ss::Reader& r) {
+    std::lock_guard<std::mutex> lk(g_fs_mutex);
+    uint32_t next = r.u32();
+    for (auto& [h, f] : g_files) fclose(f.f);
+    g_files.clear();
+    for (auto& [h, d] : g_dirs) closedir(d.d);
+    g_dirs.clear();
+    uint32_t n = r.u32();
+    for (uint32_t i = 0; i < n && r.ok; i++) {
+        uint32_t h = r.u32();
+        std::string gp = r.str(), mode = r.str();
+        uint64_t pos = r.u64();
+        // reopening must not truncate or create: writers continue in update mode
+        std::string m = mode.find_first_of("wa+") != std::string::npos ? "r+b" : "rb";
+        FILE* f = fopen(host_path(gp).c_str(), m.c_str());
+        if (!f) {
+            LOG("[savestate] cannot reopen %s", gp.c_str());
+            continue;
+        }
+        fseeko(f, (off_t)pos, SEEK_SET);
+        g_files[h] = {f, gp, mode};
+    }
+    n = r.u32();
+    for (uint32_t i = 0; i < n && r.ok; i++) {
+        uint32_t h = r.u32();
+        std::string gp = r.str();
+        uint32_t read = r.u32();
+        DIR* d = opendir(host_path(gp).c_str());
+        if (!d) continue;
+        OpenDir od{d, host_path(gp), gp, 0};
+        while (od.read < read) {
+            struct dirent* de = readdir(d);
+            if (!de) break;
+            if (!strcmp(de->d_name, ".") || !strcmp(de->d_name, "..")) continue;
+            od.read++;
+        }
+        g_dirs[h] = od;
+    }
+    g_next_handle = std::max(g_next_handle, next);
 }
