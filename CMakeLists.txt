@@ -81,6 +81,7 @@ target_compile_options(zstd_dec PRIVATE -w -O2)
 # ---- runtime sources shared by both platforms
 # GX2 and HLE sources are compiled into the final binary (not a static library) so their strong
 # definitions replace the generated weak import stubs.
+# (runtime/src/rtl_text.cpp and rtl_text_hooks.cpp are picked up by this glob)
 file(GLOB RUNTIME_SOURCES CONFIGURE_DEPENDS runtime/src/*.cpp runtime/src/*.c runtime/src/hle/*.cpp runtime/src/mods/*.cpp
      runtime/src/disc/*.cpp)
 list(FILTER RUNTIME_SOURCES EXCLUDE REGEX "audio_out_(coreaudio|aaudio)\\.cpp$")
@@ -119,6 +120,11 @@ if(APPLE)
   # frame interpolation: hidden joints that were not updated (Link's hand poses) are drawn at the current step (runtime/src/interp_joints.h)
   add_executable(interp_joints_test runtime/tools/interp_joints_test.cpp)
   target_compile_options(interp_joints_test PRIVATE -UNDEBUG)
+
+  # right-to-left text: shaping, bidi order and line layout on their own (runtime/src/rtl_text.h)
+  add_executable(rtl_text_test runtime/tools/rtl_text_test.cpp runtime/src/rtl_text.cpp)
+  target_include_directories(rtl_text_test PRIVATE runtime/src)
+  target_compile_options(rtl_text_test PRIVATE -UNDEBUG)
 
 elseif(ANDROID)
   # ---- Android: libwwhd.so, native GX2 on Vulkan; the Java activity in android/ loads it
@@ -237,10 +243,12 @@ wwhd_hooks:
     .incbin \"${HOOKS_DIR}/hooks_perf.txt\"
     .byte 10
     .incbin \"${HOOKS_DIR}/hooks_resmgr.txt\"
+    .byte 10
+    .incbin \"${HOOKS_DIR}/hooks_rtl.txt\"
 wwhd_hooks_end:
 ")
     set_source_files_properties(${CMAKE_BINARY_DIR}/recomp_data.S PROPERTIES OBJECT_DEPENDS
-      "${OPS_BC};${HOOKS_DIR}/hooks.txt;${HOOKS_DIR}/hooks_climb.txt;${HOOKS_DIR}/hooks_mods.txt;${HOOKS_DIR}/hooks_aspect.txt;${HOOKS_DIR}/hooks_perf.txt;${HOOKS_DIR}/hooks_resmgr.txt;${HOOKS_DIR}/hot_functions.txt;${HOOKS_DIR}/covered_functions.txt;${HOOKS_DIR}/release_eur.txt;${HOOKS_DIR}/release_jpn.txt")
+      "${OPS_BC};${HOOKS_DIR}/hooks.txt;${HOOKS_DIR}/hooks_climb.txt;${HOOKS_DIR}/hooks_mods.txt;${HOOKS_DIR}/hooks_aspect.txt;${HOOKS_DIR}/hooks_perf.txt;${HOOKS_DIR}/hooks_resmgr.txt;${HOOKS_DIR}/hooks_rtl.txt;${HOOKS_DIR}/hot_functions.txt;${HOOKS_DIR}/covered_functions.txt;${HOOKS_DIR}/release_eur.txt;${HOOKS_DIR}/release_jpn.txt")
 
     if(WWHD_DEVICE_RECOMP)
       # The game code is linked at startup (loader.cpp). The game functions the runtime calls
