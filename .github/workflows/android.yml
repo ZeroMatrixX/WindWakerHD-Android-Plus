@@ -43,30 +43,15 @@ jobs:
         if: steps.llvm.outputs.cache-hit != 'true'
         run: tools/android/build-llvm.sh
 
-      - name: Signing key
-        env:
-          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
-          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASS: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          echo "$KEYSTORE_B64" | base64 -d > android/release.jks
-          cat > android/keystore.properties <<EOF
-          storeFile=release.jks
-          storePassword=$KS_PASS
-          keyAlias=$KEY_ALIAS
-          keyPassword=$KEY_PASS
-          EOF
-
       - name: Build APK
         working-directory: android
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           chmod +x gradlew
-          ./gradlew assembleRelease -PwwhdDeviceRecomp \
+          ./gradlew assembleDebug -PwwhdDeviceRecomp \
             -PwwhdVersionCode=${{ github.run_number }} -PwwhdVersionName=1.14-custom
 
       - uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/debug/*.apk
