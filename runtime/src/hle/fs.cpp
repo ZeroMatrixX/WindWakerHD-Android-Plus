@@ -7,14 +7,19 @@
 #include <sys/stat.h>
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <strings.h>
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "../mem_writes.h"
 #include "../runtime.h"
+
+// التعريف الصحيح المتوافق مع نسخة 1.14
+namespace rtl_text { void language_pack_opened(const std::string& host_path); }
 
 namespace {
 
@@ -47,10 +52,6 @@ uint32_t g_next_handle = 1;
 
 std::string host_path_exact(const std::string& guest);
 
-// The Wii U's file system ignores case and the game relies on it (it opens
-// "Common/Audiores/c_king.bfsar"; the disc has "AudioRes"). Android's shared storage ignores case
-// on most devices but not on all (seen on an older device with Android 16), so a game data path
-// that doesn't exist as spelled is looked up folder by folder ignoring case; results are kept.
 std::string case_insensitive(const std::string& root, const std::string& path) {
     struct stat st;
     if (stat(path.c_str(), &st) == 0 || path.size() <= root.size()) return path;
@@ -85,12 +86,8 @@ std::string case_insensitive(const std::string& root, const std::string& path) {
 std::string host_path(const std::string& guest) {
     std::string r = host_path_exact(guest);
     const std::string& g = config::game_dir;
-    // a mod's replacement for a game data file (content packs, the translation's message packs):
-    // <overlay>/content/... instead of <game>/content/..., from the first overlay that has the file
-    // (config::content_overlay: their folders, one per line)
     const std::string gc = g + "/content/";
     if (!config::content_overlay.empty() && r.compare(0, gc.size(), gc) == 0) {
-        // (set before the game starts)
         static const std::vector<std::string> overlays = [] {
             std::vector<std::string> v;
             const std::string& all = config::content_overlay;
@@ -126,7 +123,7 @@ std::string host_path_exact(const std::string& guest) {
     if (map("/vol/code", config::game_dir + "/code")) return p;
     if (map("/vol/meta", config::game_dir + "/meta")) return p;
     if (map("/vol/save", config::save_dir)) return p;
-    if (!p.empty() && p[0] != '/') return config::game_dir + "/content/" + p;  // relative to cwd (/vol/content)
+    if (!p.empty() && p[0] != '/') return config::game_dir + "/content/" + p;
     return config::game_dir + p;
 }
 
@@ -152,6 +149,14 @@ int32_t open_file(const std::string& gpath, const std::string& mode, uint32_t ou
     FILE* f = fopen(hp.c_str(), m.c_str());
     TRACE("[fs] open %s (%s) -> %s", gpath.c_str(), mode.c_str(), f ? "ok" : "not found");
     if (!f) return FS_NOT_FOUND;
+    
+    // تفعيل الـ RTL تلقائياً عند فتح ملفات اللغة بصيغة .pack
+    if (mode.find_first_of("wa+") == std::string::npos) {
+        if (gpath.find(".pack") != std::string::npos) {
+            rtl_text::language_pack_opened(hp);
+        }
+    }
+
     std::lock_guard<std::mutex> lk(g_fs_mutex);
     uint32_t h = g_next_handle++;
     g_files[h] = {f, gpath, m};
@@ -193,7 +198,7 @@ HLE(coreinit, FSDelClient) { ret(c, 0); }
 HLE(coreinit, FSInitCmdBlock) { memset(mem::ptr(arg(c, 0)), 0, 0xA80); }
 HLE(coreinit, FSSetCmdPriority) { ret(c, 0); }
 HLE(coreinit, FSSetStateChangeNotification) {}
-HLE(coreinit, FSGetVolumeState) { ret(c, 1); }  // FS_VOLSTATE_READY
+HLE(coreinit, FSGetVolumeState) { ret(c, 1); }
 HLE(coreinit, FSGetLastError) { ret(c, 0); }
 HLE(coreinit, FSGetLastErrorCodeForViewer) { ret(c, 0); }
 HLE(coreinit, FSGetCwd) { mem::write_cstr(arg(c, 2), "/vol/content", arg(c, 3)); ret(c, FS_OK); }
@@ -218,9 +223,9 @@ HLE(coreinit, FSReadFile) {
     if (!f || size == 0) { ret(c, 0); return; }
     size_t n;
     {
-        BlockingScope b;  // the calling thread waits for the disc; others on its core run
+        BlockingScope b;
         n = fread(mem::ptr(dst), 1, (size_t)size * count, f);
-        memw::mark(dst, (uint32_t)n);  // DMA on the console: no flush follows
+        memw::mark(dst, (uint32_t)n);
     }
     ret(c, (uint32_t)(n / size));
 }
@@ -284,8 +289,6 @@ HLE(coreinit, FSCloseDir) {
     ret(c, FS_OK);
 }
 
-// ---------------------------------------------------------------- nn_save
-// Saves live in <save dir>/<account slot or "common">/<path>
 static std::string save_path(uint32_t slot, const std::string& p) {
     std::string base = slot == 0xFF ? "/vol/save/common" : "/vol/save/user";
     return base + (p.empty() || p[0] == '/' ? "" : "/") + p;
@@ -307,10 +310,6 @@ HLE(nn_save, SAVEOpenDir) {
     make_parent_dirs(host_path(gp) + "/");
     ret(c, open_dir(gp, arg(c, 4)));
 }
-
-// ---------------------------------------------------------------- save states: open files
-#include <algorithm>
-#include <vector>
 
 #include "../savestate.h"
 void fs_ss_save(ss::Writer& w) {
@@ -350,7 +349,6 @@ void fs_ss_load(ss::Reader& r) {
         uint32_t h = r.u32();
         std::string gp = r.str(), mode = r.str();
         uint64_t pos = r.u64();
-        // reopening must not truncate or create: writers continue in update mode
         std::string m = mode.find_first_of("wa+") != std::string::npos ? "r+b" : "rb";
         FILE* f = fopen(host_path(gp).c_str(), m.c_str());
         if (!f) {
