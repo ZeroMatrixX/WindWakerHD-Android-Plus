@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TLoZ:TWW HD Recompiled</string>
+
+    <string name="setup_text">لم يتم العثور على ملفات اللعبة أو أنها لا تطابق هذا الإصدار.\n\nيحتوي هذا التطبيق فقط على الشيفرة المُعاد تجميعها من نسختك الخاصة من اللعبة، ويحتاج إلى ملفات اللعبة المستخرجة من نفس النسخة. استخرجها على الحاسوب (راجع README.md: tools/wudextract.py)، ثم انسخ المجلد الناتج (الذي يضم code/ وcontent/ وmeta/) إلى:\n\n%1$s\n\nمثال: adb push game /sdcard/Android/data/org.wwhdrecomp.app/files/\n\nالمشكلة: %2$s</string>
+    <string name="touch_skip">تخطي</string>
+    <string name="motion_source_pad">الآن: حساسات %1$s</string>
+    <string name="motion_source_device">الآن: حساسات هذا الجهاز</string>
+    <string name="motion_source_device_no_pad">الآن: حساسات هذا الجهاز (ذراع التحكم المستخدمة لا تبلّغ عن أي حساسات)</string>
+    <string name="motion_source_off">الآن: متوقف</string>
+    <string name="gpu_safe_title">الوضع الآمن لوحدة الرسوميات</string>
+    <string name="restart_needed">يُطبَّق بعد إعادة التشغيل.</string>
+    <string name="gpu_safe_notice">أُغلقت اللعبة في المرة السابقة بسبب مشغّل وحدة الرسوميات (%2$s). تعمل الآن في الوضع الآمن للرسوميات بالمستوى %1$d، الذي يتجنب ميزات تتعامل معها بعض المشغّلات بشكل سيئ. يمكنك تغييره من الرسوميات › الوضع الآمن لوحدة الرسوميات.</string>
+    <string name="opt_gpu_safe">الوضع الآمن لوحدة الرسوميات</string>
+    <string name="opt_gpu_safe_hint">يُفعَّل تلقائياً بعد تعطل مشغّل وحدة الرسوميات؛ يتجنب ميزات تتعامل معها بعض المشغّلات بشكل سيئ. يُطبَّق بعد إعادة التشغيل</string>
+    <string-array name="gpu_safe_modes">
+        <item>متوقف</item>
+        <item>أساسي</item>
+        <item>أقصى</item>
+    </string-array>
+    <string name="opt_ptbr">الترجمة البرتغالية (البرازيل)</string>
+    <string name="opt_ptbr_hint">نص اللعبة بالبرتغالية البرازيلية (ترجمة معجبين من Triforce-Heroes)</string>
+    <string name="ptbr_not_installed">غير مثبّتة</string>
+    <string name="ptbr_about">تشغّل اللعبة بالترجمة البرتغالية البرازيلية التي أنجزها معجبون من Triforce-Heroes (triforce-heroes.com.br). تحلّ الترجمة محل النص الإنجليزي، لذلك يؤدي تفعيلها إلى ضبط لغة اللعبة على الإنجليزية. إن لم تكن مثبّتة، فاختر مجلدها (نسخة Cemu أو نسخة الجهاز، وهو المجلد الذي يحتوي على rules.txt).</string>
+    <string name="ptbr_install">تثبيت الترجمة…</string>
+    <string name="ptbr_install_hint">اختر مجلد الترجمة</string>
+    <string name="ptbr_install_other">تثبيت ترجمة أخرى (أي لغة)…</string>
+    <string name="ptbr_installed">مثبّتة: %1$s</string>
+    <string name="ptbr_toggle_hint">يُطبَّق بعد إعادة التشغيل</string>
+    <string name="ptbr_remove">إزالة الترجمة</string>
+    <string name="ptbr_remove_confirm">هل تريد حذف ملفات الترجمة المثبّتة؟ يمكنك تثبيتها مرة أخرى لاحقاً.</string>
+    <string name="ptbr_installing">جارٍ تثبيت الترجمة…</string>
+    <string name="ptbr_failed">تعذّر تثبيت الترجمة: %1$s</string>
+    <string name="ptbr_not_found">لا توجد ملفات ترجمة (permanent_2d_*.pack) في ذلك المجلد.</string>
+    <string name="ptbr_on_restart">الترجمة مفعّلة ولغة اللعبة هي الإنجليزية. أعد تشغيل اللعبة لتلعب بالبرتغالية.</string>
+    <string name="ptbr_off_restart">الترجمة متوقفة. أعد تشغيل اللعبة لتطبيق ذلك.</string>
+    <string name="opt_camera_stick">عصا الكاميرا</string>
+    <string name="opt_camera_stick_hint">عصا على اليمين تدير الكاميرا (حرّكها من تعديل تخطيط اللمس). ويظل السحب على الجانب الأيمن يعمل أيضاً</string>
+    <string name="opt_hud">تخطيط واجهة اللعبة (HUD)</string>
+    <string name="opt_hud_hint">انقل القلوب والروبيات والأزرار وبقية عناصر واجهة اللعبة أو غيّر حجمها أو أخفِها</string>
+    <string name="hud_hidden">مخفي</string>
+    <string name="hud_hide_all">إخفاء الواجهة</string>
+    <string name="hud_show_all">إظهار الواجهة</string>
+    <string name="hud_edit_hint">المس عنصراً · اسحب لنقله · المقبض في الزاوية أو القرص بإصبعين لتغيير الحجم · 🗑 يخفيه، + يظهره · ↺ يعيد الضبط · ✓ أو رجوع للإنهاء</string>
+    <string-array name="hud_parts">
+        <item>القلوب والسحر</item>
+        <item>الروبيات</item>
+        <item>أزرار العناصر</item>
+        <item>المفاتيح الصغيرة</item>
+        <item>بوصلة الرياح والساعة</item>
+    </string-array>
+    <string name="opt_app_language">لغة التطبيق</string>
+    <string name="opt_app_language_hint">قوائم هذا التطبيق ورسائله (نص اللعبة في اللعبة › لغة اللعبة، أو الترجمة في التعديلات)</string>
+    <string-array name="app_languages">
+        <item>النظام</item>
+        <item>English</item>
+        <item>Português (Brasil)</item>
+        <item>Español</item>
+        <item>العربية</item>
+    </string-array>
+    <string name="pad_face_bottom">الزر السفلي (A / X)</string>
+    <string name="pad_face_right">الزر الأيمن (B / دائرة)</string>
+    <string name="pad_face_left">الزر الأيسر (X / مربع)</string>
+    <string name="pad_face_top">الزر العلوي (Y / مثلث)</string>
+    <string name="opt_menu_size">حجم القوائم</string>
+    <string name="opt_menu_size_hint">تتناسب القوائم مع الشاشة تلقائياً؛ هذا الخيار يجعلها أصغر أو أكبر.</string>
+    <string name="setup_retry">التحقق مرة أخرى</string>
+    <string name="setup_welcome">أهلاً بك!\n\nلا يحتوي هذا التطبيق على أي ملفات للعبة. إنه يشغّل نسختك الخاصة من The Legend of Zelda: The Wind Waker HD لجهاز Wii U (النسخة الأمريكية أو الأوروبية أو اليابانية).\n\nضع هذه الملفات الثلاثة في مجلد واحد على هذا الجهاز، ثم اختر ذلك المجلد:\n•  صورة القرص (.wux أو .wud)\n•  مفتاح القرص (اسم الصورة مع .key)\n•  المفتاح المشترك للجهاز (common.key)\n\nأو ضع أرشيف Cemu للعبتك (.wua) في مجلد؛ فهو لا يحتاج إلى مفاتيح.\n\nبعدها يستخرج التطبيق ملفات اللعبة (نحو 1.7 جيجابايت) ويجهّز شيفرة اللعبة لهذا الجهاز. يحدث ذلك مرة واحدة ويستغرق بعض الوقت بحسب معالج الجهاز.</string>
+    <string name="setup_problem">ملفات اللعبة التي وُجدت لا تعمل: %1$s</string>
+    <string name="setup_extract">استخراج من صورة القرص أو من ملف .wua…</string>
+    <string name="extract_missing">اختر المجلد الذي يضم صورة القرص ومفتاح القرص والمفتاح المشترك للجهاز:\n\n%1$s الصورة (.wux أو .wud)\n%2$s مفتاح القرص (اسم الصورة مع .key)\n%3$s common.key\n\nأو مجلداً يضم أرشيف Cemu للعبتك (.wua).</string>
+    <string name="extract_bad_key">يجب أن يحتوي ملف المفتاح على 16 بايت أو 32 رقماً سداسي عشري.</string>
+    <string name="extract_running">جارٍ استخراج ملفات اللعبة…</string>
+    <string name="extract_detail">%1$d من %2$d م.ب (%3$.0f م.ب/ث)</string>
+    <string name="extract_detail_short">%1$d من %2$d م.ب</string>
+    <string name="work_channel">إعداد اللعبة</string>
+    <string name="work_extracting">استخراج ملفات اللعبة</string>
+    <string name="work_compiling">تجهيز شيفرة اللعبة</string>
+    <string name="space_title">مساحة التخزين غير كافية</string>
+    <string name="space_text">تحتاج هذه الخطوة إلى نحو %1$d م.ب من المساحة الفارغة؛ والمتاح %2$d م.ب. حرّر بعض المساحة وحاول مرة أخرى.</string>
+    <string name="extract_failed">فشل الاستخراج: %1$s</string>
+    <string name="compile_running">جارٍ تجهيز شيفرة اللعبة لهذا الجهاز…\n\nيحدث هذا مرة واحدة ويستغرق بعض الوقت بحسب معالج الجهاز: بضع دقائق على الأجهزة السريعة، وأكثر على الأبطأ. يمكنك مغادرة التطبيق في الأثناء: فهو يواصل العمل في الخلفية (انظر الإشعار)، وإن أُغلق فسيكمل من حيث توقف.</string>
+    <string name="compile_detail">%1$d من %2$d جزءاً (%3$d:%4$02d)</string>
+    <string name="compile_failed">فشل تجهيز شيفرة اللعبة: %1$s</string>
+    <string name="menu_about">حول التطبيق والتراخيص</string>
+    <string name="compile_continue">متابعة</string>
+    <string name="compile_stopping">جارٍ الإيقاف…</string>
+    <string name="compile_cancelled">أُلغي تجهيز شيفرة اللعبة. سيكمل من حيث توقف عند البدء مرة أخرى.</string>
+
+    <string name="menu_resolution">الدقة: %1$s</string>
+    <string name="res_title">دقة العرض</string>
+    <string name="res_original">الأصلية (%1$s)</string>
+    <string name="res_scaled_up">%1$s× (%2$s، حِمل أكبر على وحدة الرسوميات)</string>
+    <string name="res_scaled_down">%1$s× (%2$s، حِمل أقل على وحدة الرسوميات)</string>
+    <string name="res_restart">تسري الدقة الجديدة عند إعادة تشغيل اللعبة. يضيع التقدم المحرز منذ آخر حفظ.</string>
+    <string name="res_restart_now">أعد التشغيل الآن</string>
+    <string name="res_restart_later">لاحقاً</string>
+    <string name="menu_fg">توليد الإطارات: %1$s</string>
+    <string name="menu_states">حالات الحفظ…</string>
+    <string name="states_title">حالات الحفظ</string>
+    <string name="state_slot">الخانة %1$d %2$s</string>
+    <string name="state_empty">— فارغة</string>
+    <string name="state_incompatible">%1$s (من إصدار آخر، لا يمكن تحميلها)</string>
+    <string name="state_save">احفظ هنا</string>
+    <string name="state_load">تحميل</string>
+    <string name="state_overwrite">هل تريد استبدال الحالة في الخانة %1$d؟</string>
+    <string name="menu_mods">تعديلات اللعب…</string>
+    <string name="menu_aspect">نسبة العرض إلى الارتفاع: %1$s</string>
+    <string name="aspect_title">نسبة أبعاد الصورة</string>
+    <string-array name="aspect_modes">
+        <item>الأصلية 16:9 (مع أشرطة)</item>
+        <item>تمديد على الشاشة</item>
+        <item>ملء الشاشة (قص الحواف)</item>
+    </string-array>
+    <string name="menu_backup">استيراد / تصدير الحفظ…</string>
+    <string name="backup_title">استيراد / تصدير الحفظ</string>
+    <string name="backup_export">تصدير إلى مجلد…</string>
+    <string name="backup_import">استيراد من مجلد…</string>
+    <string name="backup_export_title">تصدير</string>
+    <string name="backup_game_save">حفظ اللعبة</string>
+    <string name="backup_states">حالات الحفظ (%1$d م.ب)</string>
+    <string name="backup_choose_folder">اختر مجلداً…</string>
+    <string name="backup_exporting">جارٍ التصدير…</string>
+    <string name="backup_exported">تم التصدير إلى المجلد \"%1$s\".</string>
+    <string name="backup_scanning">جارٍ البحث عن ملفات الحفظ…</string>
+    <string name="backup_nothing">لا يوجد حفظ للعبة (cking.sav) ولا حالات حفظ (slot1–5.bin) في هذا المجلد.</string>
+    <string name="backup_import_title">استيراد (يستبدل الموجود حالياً)</string>
+    <string name="backup_import_save">حفظ اللعبة (من %1$s)</string>
+    <string name="backup_import_states">حالات الحفظ: الخانة %1$s</string>
+    <string name="backup_import_go">استيراد</string>
+    <string name="backup_importing">جارٍ الاستيراد…</string>
+    <string name="backup_imported_states">تم استيراد حالات الحفظ. لا يمكن تحميل الحالات القادمة من إصدار آخر للتطبيق.</string>
+    <string name="backup_imported_save">تم استيراد حفظ اللعبة. ستُعاد تشغيل اللعبة الآن لاستخدامه (يُحتفظ بالحفظ السابق في save-before-import).</string>
+    <string name="backup_failed">فشل: %1$s</string>
+    <string name="mods_title">تعديلات اللعب</string>
+    <string name="mod_direct_camera">كاميرا مباشرة بالعصا اليمنى (دون تباطؤ): %1$s</string>
+    <string name="mod_camera_speed">سرعة الكاميرا المباشرة: %1$.1f×</string>
+    <string name="mod_speed_title">سرعة الكاميرا المباشرة</string>
+    <string name="mod_speed_item">%1$.1f×</string>
+    <string name="mod_first_person">المنظور الأول عند R3: %1$s</string>
+    <string name="mod_climb">تسلّق أي جدار (عجلة التحمّل؛ B أو A للإفلات): %1$s</string>
+    <string name="mod_quick_doors">أبواب سريعة (بسرعة 4×): %1$s</string>
+    <string name="mod_fast_scenes">انتقالات مشاهد سريعة (بسرعة 4×): %1$s</string>
+    <string name="fg_title">توليد الإطارات (Lossless Scaling)</string>
+    <string name="fg_about">يضيف إطارات مُستكمَلة بين إطارات اللعبة البالغة 30 إطاراً في الثانية، باستخدام ميزة توليد الإطارات في Lossless Scaling. يحتاج إلى نسختك الخاصة من الملف Lossless.dll من تثبيت Lossless Scaling لديك (في Steam: steamapps/common/Lossless Scaling). انسخه إلى هذا الجهاز واخترْه هنا. تُظهر الإطارات المولَّدة اللعبة متأخرة بنحو إطار واحد.</string>
+    <string name="fg_no_dll">يحتاج إلى Lossless.dll</string>
+    <string name="fg_choose_dll">اختر Lossless.dll…</string>
+    <string name="fg_replace_dll">اختر ملف Lossless.dll آخر…</string>
+    <string name="fg_remove_dll">إزالة Lossless.dll</string>
+    <string name="fg_enabled">توليد الإطارات: %1$s</string>
+    <string name="fg_multiplier">المضاعف: ×%1$d (%2$d إطار/ث)</string>
+    <string name="fg_multiplier_title">عدد الإطارات لكل إطار من اللعبة</string>
+    <string name="fg_multiplier_item">×%1$d (%2$d إطار/ث)</string>
+    <string name="fg_multiplier_item_over">×%1$d (%2$d إطار/ث: أكثر مما تعرضه الشاشة، فلا تُولَّد إطارات)</string>
+    <string name="fg_mode">الشبكة: %1$s</string>
+    <string name="fg_performance">الأداء</string>
+    <string name="fg_quality">الجودة (حِمل أكبر على وحدة الرسوميات)</string>
+    <string name="fg_flow_scale">مقياس التدفق: %1$d%%</string>
+    <string name="fg_flow_title">دقة تقدير الحركة</string>
+    <string name="fg_flow_item">%1$d%%</string>
+    <string name="fg_ui_detection">اكتشاف الواجهة: %1$s</string>
+    <string name="fg_bad_dll">لا يمكن استخدام هذا الملف: %1$s</string>
+    <string name="fg_dll_untested">الملف Lossless.dll مثبّت وتوليد الإطارات مفعّل، لكن هذا الإصدار من شيدراته لم يُختبر مع التطبيق: قد تبدو الإطارات المولَّدة خاطئة. إن حدث ذلك فاختر ملف Lossless.dll آخر (يذكر ملف README الإصدار الذي جرى اختباره).</string>
+    <string name="fg_dll_tested_hint">مثبّت: إصدار مُختبَر</string>
+    <string name="fg_dll_untested_hint">مثبّت: إصدار غير مُختبَر (قد تبدو الإطارات خاطئة)</string>
+    <string name="fg_not_working">لا يعمل</string>
+    <string name="fg_error">توليد الإطارات لا يعمل: %1$s</string>
+    <string name="fg_dll_ok">الملف Lossless.dll جاهز وتوليد الإطارات مفعّل.</string>
+    <string name="menu_layout">تخطيط الشاشة: %1$s</string>
+    <string name="menu_controls_hide">إخفاء عناصر التحكم على الشاشة</string>
+    <string name="menu_controls_show">إظهار عناصر التحكم على الشاشة</string>
+    <string name="menu_controls_size">حجم عناصر التحكم على الشاشة</string>
+    <string name="menu_controller">تعمل عناصر التحكم بوصفها: %1$s</string>
+    <string name="controller_gamepad">Wii U GamePad</string>
+    <string name="controller_pro">Wii U Pro Controller</string>
+    <string name="menu_ao">الإظلال المحيطي: %1$s</string>
+    <string name="menu_ao_hires">عمق الإظلال بالحجم الكامل: %1$s</string>
+    <string name="menu_aniso">ترشيح تباينيّ الخواص 16×: %1$s</string>
+    <string name="menu_perf_hud">شريط الأداء (الإطارات والحِمل ودرجات الحرارة): %1$s…</string>
+    <string name="perf_title">شريط الأداء</string>
+    <string name="perf_show">إظهار الشريط</string>
+    <string name="perf_fps">معدل الإطارات</string>
+    <string name="perf_frame">زمن الإطار</string>
+    <string name="perf_cpu">حِمل المعالج (لهذا التطبيق)</string>
+    <string name="perf_gpu">حِمل وحدة الرسوميات (وزمن توليد الإطارات)</string>
+    <string name="perf_temp_cpu">درجة حرارة المعالج</string>
+    <string name="perf_temp_gpu">درجة حرارة وحدة الرسوميات</string>
+    <string name="perf_temp_bat">درجة حرارة البطارية</string>
+    <string name="perf_settings">الإعدادات (الدقة والمؤثرات ومشغّل الرسوميات)</string>
+    <string name="perf_done">تم</string>
+    <string name="perf_move">نقل الشريط</string>
+    <string name="perf_reset">إعادة الموضع</string>
+    <string name="perf_move_hint">اسحب لنقله · المس أي مكان آخر عند الانتهاء</string>
+    <!-- the in-game menu (OptionsMenu) -->
+    <string name="opt_saves">الحفظ</string>
+    <string name="opt_slot">حالة الحفظ %1$d</string>
+    <string name="opt_slot_empty">فارغة</string>
+    <string name="opt_slot_incompatible">%1$s · من إصدار آخر، لا يمكن تحميلها</string>
+    <string name="opt_slot_save">حفظ</string>
+    <string name="opt_slot_load">تحميل</string>
+    <string name="opt_export">تصدير الحفظ</string>
+    <string name="opt_export_hint">انسخ حفظ لعبتك وحالات الحفظ إلى مجلد</string>
+    <string name="opt_import">استيراد الحفظ</string>
+    <string name="opt_import_hint">استعدها من مجلد؛ استيراد حفظ اللعبة يعيد تشغيل اللعبة</string>
+    <string name="opt_auto_backup">نسخ احتياطي تلقائي للحفظ</string>
+    <string name="opt_auto_backup_hint">يحتفظ بنسخة من حفظ لعبتك في Downloads/WindWakerHD Saves، وتبقى حتى بعد إلغاء تثبيت التطبيق</string>
+    <string name="opt_autosave">الحفظ التلقائي</string>
+    <string name="opt_autosave_hint">يحفظ لقطة في خانة الحفظ التلقائي بهذه الفترة أثناء اللعب</string>
+    <string-array name="autosave_intervals">
+        <item>متوقف</item>
+        <item>كل دقيقة</item>
+        <item>كل دقيقتين</item>
+        <item>كل 5 دقائق</item>
+        <item>كل 10 دقائق</item>
+    </string-array>
+    <string name="opt_slot_auto">تلقائي (حفظ تلقائي)</string>
+    <string name="restore_title">هل تريد استعادة حفظ لعبتك؟</string>
+    <string name="restore_message">لا يوجد حفظ للعبة بعد. إن كنت قد لعبت من قبل (بإصدار أقدم من التطبيق أو من نسخة احتياطية)، فاختر المجلد الذي يحتويه: مجلد \"%1$s\" في Downloads يحوي النسخ الاحتياطية التلقائية، أو اختر مجلداً صدّرت إليه. يمكنك أيضاً فعل ذلك لاحقاً من الخيارات › الحفظ › استيراد الحفظ.</string>
+    <string name="restore_new_game">لعبة جديدة</string>
+    <string name="restore_pick">اختر مجلداً…</string>
+    <string name="opt_graphics">الرسوميات</string>
+    <string name="opt_mods">التعديلات</string>
+    <string name="opt_controls">التحكم</string>
+    <string name="opt_back">رجوع</string>
+    <string name="opt_ok">موافق</string>
+    <string name="opt_cancel">إلغاء</string>
+    <string name="opt_on">مفعّل</string>
+    <string name="opt_off">متوقف</string>
+    <string name="opt_pad_hint">ذراع التحكم: Select + Start، أو اضغط مطولاً على Select أو اضغط Home للفتح والإغلاق · L / R للتبديل بين التبويبات · الأسهم للتنقل وتغيير القيم · الزر الأيمن للاختيار · الزر السفلي للرجوع</string>
+    <string name="lang_restart">تسري اللغة الجديدة عند إعادة تشغيل اللعبة. يضيع التقدم المحرز منذ آخر حفظ.</string>
+    <string name="opt_fps">معدل الإطارات</string>
+    <string name="opt_fps_hint">60 إطاراً/ث (مولَّدة): تعمل اللعبة بمعدلها الأصلي 30 ويُصنع كل إطار ثانٍ على وحدة الرسوميات من الإطار الأخير (سلس على أغلب الهواتف؛ وقد تظهر عيوب صغيرة في واجهة اللعبة وعلى حواف الشاشة). أما 60 و120 فتستكمل الإطارات على المعالج وتحتاج إلى هاتف سريع؛ وحين لا يتسع الوقت لإطار ما يُحذف وتحافظ اللعبة على سرعتها</string>
+    <string-array name="fps_modes">
+        <item>30 إطاراً/ث</item>
+        <item>60 إطاراً/ث</item>
+        <item>60 إطاراً/ث</item>
+        <item>60 حقيقي (تجريبي)</item>
+    </string-array>
+    <string name="fps_40">40 إطاراً/ث (شاشة 120 هرتز)</string>
+    <string name="fps_generated">60 إطاراً/ث (مولَّدة)</string>
+    <string name="fps_120">120 إطاراً/ث (شاشة 120 هرتز)</string>
+    <string name="opt_layout_edit">تعديل تخطيط اللمس</string>
+    <string name="opt_layout_edit_hint">انقل كل عنصر تحكم وغيّر حجمه على شبكة (وكذلك زر ✎ بجوار ≡)</string>
+    <string name="layout_edit_hint">اسحب للنقل · المقبض في الزاوية أو القرص بإصبعين لتغيير الحجم · 🗑 يزيل العنصر المحدد · + يعيد العناصر المزالة · رجوع للإلغاء</string>
+    <string name="layout_add_title">المس عنصراً لإعادته</string>
+    <string name="opt_camera_sensitivity">سرعة سحب الكاميرا</string>
+    <string name="opt_camera_sensitivity_hint">اسحب على الجانب الأيمن من الشاشة لتدوير الكاميرا؛ والنقر المزدوج هناك يعيد توسيطها</string>
+    <string name="opt_combat_buttons">أزرار القتال</string>
+    <string name="opt_combat_buttons_hint">هجوم القفز والضربة العمودية والهجوم الدوّار والمراوغة بلمسة واحدة</string>
+    <string-array name="combat_buttons">
+        <item>مع السيف</item>
+        <item>دائماً</item>
+        <item>مخفية</item>
+    </string-array>
+    <string name="opt_haptics">اهتزاز عند اللمس</string>
+    <string name="opt_cheats">الغشّ</string>
+    <string name="opt_cheats_hint">العناصر والسيف والدرع والقلوب والصحة اللانهائية…</string>
+    <string name="opt_button_style">أيقونات الأزرار</string>
+    <string name="opt_button_style_hint">رموز الأزرار في عناصر اللمس وفي اللعبة (واجهتها ونصوصها): Wii U أو Xbox أو PlayStation، وفقاً لأزرار ذراع التحكم التي عيّنتها. تتغير أيقونات اللعبة بعد إعادة التشغيل</string>
+    <string-array name="button_styles">
+        <item>Wii U (Nintendo)</item>
+        <item>Xbox</item>
+        <item>PlayStation</item>
+    </string-array>
+    <string name="cheat_note">يغيّر الغشّ ملف الحفظ المحمَّل؛ ويبقى بعد حفظ اللعبة. أما اللعبة نفسها فتسحب السيف في Forsaken Fortress والقوس في Tower of the Gods.</string>
+    <string name="cheat_apply">تطبيق</string>
+    <string name="cheat_done">تم تطبيق الغشّ</string>
+    <string name="cheat_items">كل العناصر</string>
+    <string name="cheat_sword">أفضل سيف ودرع</string>
+    <string name="cheat_stats">قلوب وسحر ومحفظة ممتلئة</string>
+    <string name="cheat_songs">كل الأغاني</string>
+    <string name="cheat_triforce">كل شظايا Triforce</string>
+    <string name="cheat_dungeon">الخريطة والبوصلة ومفتاح الزعيم (هذا السرداب)</string>
+    <string name="cheat_key">مفتاح صغير (هذا السرداب)</string>
+    <string name="cheat_story_hint">تقدم القصة: قد يغيّر أحداث القصة أو يفسدها</string>
+    <string name="cheat_inf_health">صحة لانهائية</string>
+    <string name="cheat_inf_magic">سحر لانهائي</string>
+    <string name="cheat_inf_ammo">سهام وقنابل لانهائية</string>
+    <string name="opt_gyro_recalibrate">إعادة معايرة الجيروسكوب</string>
+    <string name="opt_gyro_recalibrate_hint">أمسك الهاتف كما تلعب ثم اضغط: يصبح هذا الاتجاه هو الأمام</string>
+    <string name="gyro_recalibrated">تمت إعادة معايرة الجيروسكوب</string>
+    <string name="opt_drawdone">تجريبي: GX2DrawDone</string>
+    <string name="opt_drawdone_hint">يتيح للعبة تجهيز الإطار التالي أثناء عمل محرك العرض. قد يسبب أخطاء بصرية: للاختبار فقط.</string>
+    <string-array name="drawdone_modes">
+        <item>انتظار (الافتراضي)</item>
+        <item>متأخر بإطار</item>
+        <item>بلا انتظار</item>
+    </string-array>
+    <string name="opt_core_mode">أنوية المعالج</string>
+    <string name="opt_core_mode_hint">المكان الذي تعمل فيه اللعبة ومحرك العرض. أنوية الأداء: أقل حرارة للعب مستقر. النواة الرئيسة: أسرع محرك عرض وأعلى حرارة.</string>
+    <string-array name="core_modes">
+        <item>تلقائي</item>
+        <item>أنوية الأداء</item>
+        <item>النواة الرئيسة (محرك العرض)</item>
+        <item>النواة الرئيسة (اللعبة)</item>
+    </string-array>
+    <string name="opt_resolution">دقة العرض</string>
+    <string name="opt_framegen">توليد الإطارات</string>
+    <string name="opt_aspect">نسبة العرض إلى الارتفاع</string>
+    <string name="opt_render_aspect">الشاشة العريضة</string>
+    <string name="opt_render_aspect_hint">شكل الشاشة: تعرض اللعبة بنسبة أبعاد شاشتك وتُظهر مساحة أكبر على الجانبين؛ وتحافظ واجهة اللعبة على نسبها عند حواف الشاشة</string>
+    <string-array name="render_aspect_modes">
+        <item>الأصلية 16:9</item>
+        <item>شكل الشاشة</item>
+    </string-array>
+    <string name="opt_layout">تخطيط الشاشة</string>
+    <string name="opt_ao">الإظلال المحيطي</string>
+    <string name="opt_bloom">شدة التوهج</string>
+    <string name="opt_bloom_hint">وهج حول المناطق الساطعة. القيمة 100% تطابق اللعبة الأصلية</string>
+    <string name="opt_area_blur">تمويه مطابق للجهاز الأصلي</string>
+    <string name="opt_area_blur_hint">عند دقة أعلى من 1x: يزيل الشبكة الدقيقة في الظلال وحول الأجسام على الأرض. يستهلك من وقت وحدة الرسوميات</string>
+    <string name="opt_ao_hires">عمق الإظلال بالحجم الكامل</string>
+    <string name="opt_aniso">ترشيح تباينيّ الخواص 16×</string>
+    <string name="opt_distant_shadows">الظلال البعيدة</string>
+    <string name="opt_distant_shadows_hint">الظلال في البعيد. متوقفة: عمل أقل لوحدة الرسوميات في الغابات والمناطق المفتوحة، للهواتف الأضعف</string>
+    <string name="opt_perf">شريط الأداء</string>
+    <string name="opt_perf_hint">الإطارات والحِمل ودرجات الحرارة</string>
+    <string name="opt_fg_choose_dll">اختيار Lossless.dll</string>
+    <string name="opt_fg_multiplier">المضاعف</string>
+    <string name="opt_fg_multiplier_hint">عدد الإطارات المعروضة لكل إطار من اللعبة</string>
+    <string name="opt_fg_network">الشبكة</string>
+    <string name="opt_fg_flow">مقياس التدفق</string>
+    <string name="opt_fg_flow_hint">دقة تقدير الحركة: الأقل أسرع</string>
+    <string name="opt_fg_ui">اكتشاف الواجهة</string>
+    <string name="opt_fg_ui_hint">يُبقي القوائم والنصوص واضحة</string>
+    <string name="opt_fg_replace_dll">اختيار Lossless.dll</string>
+    <string name="opt_fg_remove_dll">إزالة Lossless.dll</string>
+    <string name="opt_fg_remove_confirm">هل تريد إزالة Lossless.dll من التطبيق؟ يتوقف توليد الإطارات إلى أن تختاره مرة أخرى.</string>
+    <string name="opt_perf_move">نقل الشريط</string>
+    <string name="opt_perf_move_hint">يغلق القائمة: اسحب الشريط بإصبعك، والمس أي مكان آخر عند الانتهاء</string>
+    <string name="opt_perf_reset">إعادة موضعه</string>
+    <string name="opt_capture">التقاط إطار</string>
+    <string name="opt_capture_hint">لأغراض تصحيح الأخطاء: يُكتب في مجلد التطبيق</string>
+    <string name="opt_mod_direct_camera">كاميرا مباشرة بالعصا اليمنى</string>
+    <string name="opt_mod_direct_camera_hint">دون تباطؤ: تتبع الكاميرا العصا فوراً</string>
+    <string name="opt_mod_camera_speed">سرعة الكاميرا المباشرة</string>
+    <string name="opt_mod_first_person">المنظور الأول عند R3</string>
+    <string name="opt_mod_climb">تسلّق أي جدار</string>
+    <string name="opt_mod_climb_hint">مع عجلة التحمّل؛ B أو A للإفلات</string>
+    <string name="opt_mod_quick_doors">أبواب سريعة</string>
+    <string name="opt_mod_fast_scenes">انتقالات مشاهد سريعة</string>
+    <string name="opt_mod_speed_hint">بسرعة 4×</string>
+    <string name="opt_mod_ff_cutscenes">تسريع المشاهد السينمائية</string>
+    <string name="opt_mod_ff_dialogues">تسريع الحوارات</string>
+    <string name="opt_mod_ff_hint">أسرع (حتى 4×، بقدر ما يرسم هذا الجهاز) أثناء الضغط على ZR (R2)؛ وتظل مربعات النص تنتظر ضغطتك</string>
+    <string name="opt_mod_run">ركض أسرع</string>
+    <string name="opt_mod_run_hint">يقطع Link مسافة أكبر أثناء الركض؛ أما القفزات والدحرجات فتبقى كما هي</string>
+    <string name="opt_mod_swim">سباحة أسرع</string>
+    <string name="opt_mod_swim_hint">الأمر نفسه أثناء سباحة Link</string>
+    <string name="opt_mod_run_off">متوقف</string>
+    <string name="opt_mod_run_when">يُطبَّق</string>
+    <string name="opt_mod_run_always">دائماً</string>
+    <string name="opt_mod_run_with_l3">مع L3</string>
+    <string name="opt_mod_run_l3">L3</string>
+    <string name="opt_mod_run_l3_switch">ضغطة: تشغيل / إيقاف</string>
+    <string name="opt_mod_run_l3_hold">مطولاً</string>
+    <string name="opt_onscreen">عناصر التحكم على الشاشة</string>
+    <string name="opt_onscreen_size">حجم عناصر التحكم على الشاشة</string>
+    <string name="opt_controller">تعمل عناصر التحكم بوصفها</string>
+    <string name="opt_states">حالات الحفظ</string>
+    <string name="opt_backup">استيراد / تصدير الحفظ</string>
+    <string name="opt_game">اللعبة</string>
+    <string name="opt_language">لغة اللعبة</string>
+    <string name="opt_language_hint">اللغات المتوفرة في نسختك من اللعبة؛ تُطبَّق بعد إعادة التشغيل</string>
+    <string name="language_restart">ستستخدم اللعبة اللغة الجديدة بعد إعادة التشغيل.</string>
+    <string name="opt_interp">معدل الإطارات</string>
+    <string name="opt_interp_hint">استكمال الإطارات: إطارات وسيطة انطلاقاً من 30 إطاراً/ث الخاصة باللعبة. يحتاج إلى معالج سريع؛ وحين لا يتسع الوقت لإطار ما يُحذف وتحافظ اللعبة على سرعتها</string>
+    <string name="interp_off">30 إطاراً/ث (الأصلي)</string>
+    <string name="interp_fps">%d إطاراً/ث (مُستكمَلة)</string>
+    <string name="cache_loading">جارٍ تحميل ذاكرة الشيدر المؤقتة…</string>
+    <string name="cache_loading_detail">تم تجهيز %1$,d من متغيرات الشيدر</string>
+    <string name="cache_building">جارٍ تجهيز كل الشيدرات قبل بدء اللعبة…</string>
+    <string name="cache_building_detail">%1$,d من %2$,d مسار معالجة</string>
+    <string name="opt_dynamic_res">الدقة الديناميكية</string>
+    <string name="opt_dynamic_res_hint">تخفض دقة الرسوم ثلاثية الأبعاد حين لا تواكب وحدة الرسوميات (حتى 0.6x لتحافظ الهواتف الضعيفة على معدل إطاراتها) أو حين يسخن الهاتف (حتى 1x)، وترفعها ثانية حين يتسع الأداء من جديد</string>
+    <string name="dynamic_res_now">الآن: %1$sx (حِمل وحدة الرسوميات أو الحرارة)</string>
+    <string name="opt_shaders_at_start">تجهيز كل الشيدرات عند البدء</string>
+    <string name="opt_shaders_at_start_hint">يبني كل شيدر استخدمته اللعبة خلف شاشة التحميل: لا تقطّع أثناء اللعب مقابل تحميل أطول. يسري عند البدء التالي</string>
+    <string name="cheat_moon_jump">قفزة القمر</string>
+    <string name="cheat_moon_jump_hint">اضغط مطولاً على L (زر الكتف الأيسر) للارتفاع، ووجّه بالعصا اليسرى</string>
+    <string name="cheat_moon_rise">قفزة القمر: سرعة الارتفاع</string>
+    <string name="cheat_moon_fly">قفزة القمر: سرعة الطيران</string>
+    <string name="cheat_moon_nofall">قفزة القمر: بلا ضرر من السقوط</string>
+    <string name="cheat_moon_nofall_hint">الهبوط بعد الطيران لا يؤذي أبداً</string>
+    <string name="cheat_moon_anims">قفزة القمر: حركات إقلاع عشوائية</string>
+    <string name="cheat_moon_anims_hint">يختار كل إقلاع واحدة من 14 وضعية بدلاً من وضعيتي القفز</string>
+    <string name="opt_record_thread">خيط تسجيل الأوامر</string>
+    <string name="opt_record_thread_hint">خيط معالج ثانٍ يجهّز عمل وحدة الرسوميات: أسرع على أغلب الأجهزة وأبطأ على بعضها (مثل Snapdragon 855)</string>
+    <string-array name="record_thread_modes">
+        <item>تلقائي</item>
+        <item>مفعّل</item>
+        <item>متوقف</item>
+    </string-array>
+    <string name="record_thread_restart">يُطبَّق الإعداد بعد إعادة التشغيل.</string>
+    <string name="opt_motion">التحكم بالحركة</string>
+    <string name="opt_motion_hint">صوّب بإمالة الجهاز، أو بذراع تحكم مزودة بحساسات حركة</string>
+    <string name="opt_rumble">الاهتزاز</string>
+    <string name="opt_rumble_hint">على ذراع التحكم، أو على هذا الجهاز إن لم يكن في الذراع اهتزاز أو أثناء اللعب باللمس</string>
+    <string name="opt_select_map">Select يفتح الخريطة</string>
+    <string name="opt_select_map_hint">ضغطة قصيرة على Select في ذراع التحكم تفتح القائمة على تبويب الخريطة (من اللعب أو من تبويب آخر)</string>
+    <string name="autosave_done">تم الحفظ التلقائي (خانة Auto)</string>
+    <string name="opt_buttons">أزرار ذراع التحكم</string>
+    <string name="opt_buttons_hint">أي زر في ذراع التحكم يضغط أي زر من أزرار Wii U</string>
+    <string name="opt_buttons_default">الافتراضي</string>
+    <string name="opt_buttons_custom">مخصص</string>
+    <string name="opt_buttons_note">اختر زراً من أزرار Wii U، ثم اضغط زر ذراع التحكم الذي تريده له. الزر المستخدم أصلاً يتبادل المكان، فيحتفظ كل زر من أزرار Wii U بزر واحد. يفتح Home / Guide والضغط المطول على Select القائمة دائماً، وتظل القائمة تستخدم الأزرار بحسب مواضعها.</string>
+    <string name="opt_buttons_press">اضغط زر ذراع التحكم المخصص لـ %1$s (الحالي: %2$s).\n\nيُبقي Home / Guide أو إلغاء الوضع كما هو.</string>
+    <string name="opt_buttons_reset">إعادة إلى الافتراضي</string>
+    <string-array name="wiiu_buttons">
+        <item>A</item>
+        <item>B</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>L</item>
+        <item>R</item>
+        <item>ZL</item>
+        <item>ZR</item>
+        <item>− (ناقص)</item>
+        <item>+ (زائد)</item>
+        <item>ضغط العصا اليسرى</item>
+        <item>ضغط العصا اليمنى</item>
+        <item>السهم الأعلى</item>
+        <item>السهم الأسفل</item>
+        <item>السهم الأيسر</item>
+        <item>السهم الأيمن</item>
+    </string-array>
+    <string name="opt_drc_display">شاشة GamePad</string>
+    <string name="opt_drc_display_hint">عُثر على شاشة ثانية (مثل الشاشة السفلية في جهاز بشاشتين)</string>
+    <string name="drc_second_display">الشاشة الثانية</string>
+    <string name="drc_in_layout">ضمن تخطيط الشاشة</string>
+    <string name="opt_gpu_driver">مشغّل وحدة الرسوميات</string>
+    <string name="opt_gpu_driver_hint">مشغّل النظام، أو حزمة مشغّل مثبّتة</string>
+    <string name="gpu_driver_about">على وحدات Adreno يمكن تشغيل اللعبة بمشغّل Vulkan غير مشغّل النظام، مثل إصدار Mesa Turnip أو مشغّل Qualcomm أحدث. استخدم حزم مشغّلات بصيغة AdrenoTools (ملف .zip فيه meta.json والمشغّل)، كما تستخدمها المحاكيات الأخرى. يُطبَّق المشغّل الجديد بعد إعادة التشغيل. وإن لم تبدأ اللعبة به، فسيعود البدء التالي إلى مشغّل النظام.</string>
+    <string name="gpu_driver_running">قيد التشغيل الآن: %1$s</string>
+    <string name="gpu_driver_fell_back">تعذّر تحميل %1$s، لذلك يعمل مشغّل النظام. سيعود البدء التالي إليه.</string>
+    <string name="gpu_driver_system">مشغّل النظام</string>
+    <string name="gpu_driver_system_hint">المشغّل الذي جاء مع الجهاز</string>
+    <string name="gpu_driver_install">تثبيت حزمة مشغّل…</string>
+    <string name="gpu_driver_install_hint">ملف .zip فيه meta.json والمشغّل</string>
+    <string name="gpu_driver_installing">جارٍ تثبيت حزمة المشغّل…</string>
+    <string name="gpu_driver_install_failed">تعذّر تثبيت حزمة المشغّل: %1$s</string>
+    <string name="gpu_driver_not_package">هذه ليست حزمة مشغّل (ملف .zip فيه meta.json وملف .so الخاص بالمشغّل)</string>
+    <string name="gpu_driver_installed">تم تثبيت %1$s. هل تريد استخدامه الآن؟ ستُعاد تشغيل اللعبة.</string>
+    <string name="gpu_driver_use_now">استخدم وأعد التشغيل</string>
+    <string name="gpu_lost_title">توقف مشغّل وحدة الرسوميات عن الاستجابة</string>
+    <string name="gpu_lost_system">أُغلقت اللعبة في المرة السابقة لأن مشغّل وحدة الرسوميات في الهاتف تجمّد:\n%1$s\n\nقد يحدث هذا مع مشغّلات النظام المعيبة. غالباً ما يشغّل مشغّل Turnip اللعبة. اختر حزمة مشغّل (ملف .zip بصيغة AdrenoTools، مثل إصدار Turnip حديث لوحدة Adreno لديك) لاستخدامها من الآن فصاعداً، أو ابدأ اللعبة كما هي.</string>
+    <string name="gpu_lost_custom">أُغلقت اللعبة في المرة السابقة لأن مشغّل وحدة الرسوميات المثبّت تجمّد:\n%1$s\n\nارجع إلى مشغّل النظام، أو اختر حزمة مشغّل أخرى، أو ابدأ اللعبة بهذا المشغّل مرة أخرى.</string>
+    <string name="gpu_lost_unknown_driver">(مشغّل غير معروف)</string>
+    <string name="gpu_lost_start">ابدأ اللعبة</string>
+    <string name="gpu_lost_choose">اختر ملف مشغّل…</string>
+    <string name="gpu_lost_choose_other">ملف مشغّل آخر…</string>
+    <string name="gpu_lost_system_driver">العودة إلى مشغّل النظام</string>
+    <string name="gpu_driver_later">لاحقاً</string>
+    <string name="rotation_title">تدوير الشاشة</string>
+    <string name="rotation_message">يُبقي نظام هذا الهاتف الشاشة بالوضع الرأسي ويتجاهل أن اللعبة تعمل بالوضع الأفقي فقط، لذلك تظهر اللعبة في شريط ضيق. اسمح للتطبيق بتغيير إعداد التدوير فيثبّت الشاشة بالوضع الأفقي أثناء اللعب (بحسب الجهة التي تمسك بها الهاتف)، ثم يعيد إعدادك عند خروجك من اللعبة.</string>
+    <string name="rotation_allow">السماح</string>
+    <string name="gpu_driver_use">استخدام</string>
+    <string name="gpu_driver_remove">إزالة</string>
+    <string name="gpu_driver_switch">هل تريد التبديل إلى %1$s؟ ستُعاد تشغيل اللعبة؛ وأول تشغيل بمشغّل آخر يعيد ترجمة مسارات المعالجة ويستغرق وقتاً أطول.</string>
+    <string name="gpu_driver_remove_active">هذا المشغّل قيد الاستخدام. هل تريد إزالته وإعادة التشغيل بمشغّل النظام؟</string>
+    <string name="gpu_driver_failed">لم تبدأ اللعبة بمشغّل وحدة الرسوميات %1$s، لذلك تعمل ثانية بمشغّل النظام. يمكنك اختيار المشغّل مرة أخرى من الرسوميات › مشغّل وحدة الرسوميات.</string>
+    <string name="opt_shaders">حذف ذاكرة الشيدر المؤقتة</string>
+    <string name="opt_shaders_hint">يعيد تشغيل اللعبة كما في أول بدء لها</string>
+    <string name="opt_about">حول</string>
+    <string name="crash_title">أُغلقت اللعبة بشكل غير متوقع</string>
+    <string name="crash_text">تم حفظ سجل التعطل. إن أبلغت عن المشكلة (مثلاً كمسألة issue على GitHub) فأرفقه من فضلك. يُظهر أين تعطلت اللعبة، وإصدار التطبيق، وإصدار اللعبة، وطراز جهازك، والإعدادات المستخدمة. ولا يحتوي على أي بيانات شخصية.</string>
+    <string name="crash_share">مشاركة سجل التعطل</string>
+    <string name="crash_share_all">مشاركة سجلات التعطل</string>
+    <string name="crash_not_now">ليس الآن</string>
+    <string name="crash_start_game">ابدأ اللعبة</string>
+    <string name="crash_subject">سجل تعطل Wind Waker HD</string>
+    <string name="opt_quit">خروج</string>
+    <string name="menu_capture">التقاط إطار (لتصحيح الأخطاء)</string>
+    <string name="menu_clear_shaders">حذف ذاكرة الشيدر المؤقتة…</string>
+    <string name="clear_shaders_text">تُعاد تشغيل اللعبة دون ذاكرة الشيدر المؤقتة، كما في أول بدء: تُترجم الشيدرات مجدداً مع ظهور المشاهد، لذلك يكون أول دخول إلى كل مشهد أبطأ وقد يتقطع. تبقى ملفات الحفظ وحالات الحفظ والإعدادات. (يضيع التقدم غير المحفوظ.)</string>
+    <string name="clear_shaders_restart">احذف وأعد التشغيل</string>
+    <string name="menu_quit">خروج</string>
+    <string name="on">مفعّل</string>
+    <string name="off">متوقف</string>
+    <string name="layout_title">تخطيط الشاشة</string>
+    <string name="ao_title">الإظلال المحيطي</string>
+    <string name="text_title">أدخل نصاً</string>
+    <string name="text_message">حتى %1$d حرفاً.</string>
+
+    <string-array name="layouts">
+        <item>التلفاز مع GamePad مصغّرة</item>
+        <item>التلفاز وGamePad جنباً إلى جنب</item>
+        <item>التلفاز فقط</item>
+        <item>GamePad مع التلفاز مصغّراً</item>
+        <item>هجين: التلفاز، وGamePad بملء الشاشة في القوائم</item>
+    </string-array>
+    <string-array name="ao_modes">
+        <item>الأصلي (كما في Wii U)</item>
+        <item>إصلاح المركز</item>
+        <item>إصلاح المركز + الضوضاء</item>
+        <item>متوقف</item>
+    </string-array>
+    <!-- SaveVault: saves kept outside the app -->
+    <string name="vault_title">حافظ على ملفات حفظك</string>
+    <string name="vault_message">اسمح بـ \"الوصول إلى كل الملفات\" فيحتفظ التطبيق بنسخة من حفظ لعبتك وحالات الحفظ وإعداداتك في مجلد \"%1$s\" على هاتفك. تبقى هناك عند إلغاء تثبيت التطبيق أو تحديثه، ويعيد التثبيت الجديد كل شيء من تلقاء نفسه.</string>
+    <string name="vault_message_new">لا يوجد حفظ للعبة بعد. إن كنت قد لعبت من قبل، فاسمح بـ \"الوصول إلى كل الملفات\" ليعيد التطبيق حفظ لعبتك وحالات الحفظ والإعدادات من مجلد \"%1$s\" (أو من النسخ الاحتياطية التلقائية في Downloads) من تلقاء نفسه، ويبقيها هناك من الآن فصاعداً، فلا يضيعها أي تحديث.</string>
+    <string name="vault_later">ليس الآن</string>
+    <string name="vault_allow">السماح</string>
+    <string name="vault_on_toast">أصبحت ملفات حفظك محفوظة أيضاً في مجلد \"%1$s\"</string>
+    <string name="vault_restored_title">عادت ملفات حفظك</string>
+    <string name="vault_restoring">جارٍ استعادة ملفات حفظك…</string>
+    <string name="vault_part_save">حفظ لعبتك</string>
+    <string name="vault_part_settings">إعداداتك</string>
+    <string name="vault_restored">تمت الاستعادة من \"%2$s\": %1$s.</string>
+    <string name="vault_restart">تسري الإعدادات بعد إعادة التشغيل.</string>
+    <string name="opt_vault">الحفظ خارج التطبيق</string>
+    <string name="opt_vault_hint">متوقف: اسمح بـ \"الوصول إلى كل الملفات\" للاحتفاظ بنسخة في مجلد \"%1$s\" تبقى بعد التحديثات وإعادة التثبيت</string>
+    <string name="opt_vault_hint_on">تُنسخ ملفات حفظ لعبتك وحالات الحفظ وإعداداتك إلى مجلد \"%1$s\" كلما تغيرت؛ ويعيدها التثبيت الجديد من تلقاء نفسه</string>
+    <string name="vault_about_on">تُنسخ ملفات حفظ لعبتك وحالات الحفظ وإعداداتك إلى مجلد \"%1$s\" على هاتفك كلما تغيرت. بعد إلغاء تثبيت التطبيق أو تحديثه، يعيدها التثبيت الجديد من تلقاء نفسه عندما يبدأ دون حفظ للعبة. لا تحذف ذلك المجلد.</string>
+    <string name="language_ptbr">Português (Brasil)</string>
+    <plurals name="vault_part_states">
+        <item quantity="zero">لا حالات حفظ</item>
+        <item quantity="one">حالة حفظ واحدة</item>
+        <item quantity="two">حالتا حفظ</item>
+        <item quantity="few">%d حالات حفظ</item>
+        <item quantity="many">%d حالة حفظ</item>
+        <item quantity="other">%d حالة حفظ</item>
+    </plurals>
+    <!-- light graphics -->
+    <string name="opt_light">الرسوميات</string>
+    <string name="opt_light_hint">خفيفة: لوحدات الرسوميات الأضعف. بلا إظلال محيطي وبلا ظلال بعيدة</string>
+    <string-array name="light_modes">
+        <item>الجودة</item>
+        <item>خفيفة</item>
+    </string-array>
+    <string name="opt_packs">حزم المحتوى (تعديلات Cemu)</string>
+    <string name="opt_packs_hint">حزم رسوميات Cemu التي تستبدل ملفات اللعبة: المجسمات والخامات والنصوص</string>
+    <string name="packs_about">حزمة المحتوى هي حزمة رسوميات من Cemu تحتوي على مجلد content (مثل تعديل Linkle وحزم الخامات والترجمات): تُقرأ ملفاتها بدلاً من ملفات اللعبة. لا يمكن تطبيق تصحيحات الشيفرة الخاصة بـ Cemu على اللعبة المُعاد تجميعها فتُستبعد. ثبّت حزمة من مجلد أو من ملف .zip أدناه، أو (مع الوصول إلى كل الملفات) انسخ مجلدها إلى %1$s. الحزم الأعلى في القائمة لها الأولوية. تُعاد تشغيل اللعبة لتطبيق التغييرات.</string>
+    <string name="packs_install">تثبيت حزمة من مجلد…</string>
+    <string name="packs_install_hint">مجلد حزمة رسوميات Cemu غير مضغوطة</string>
+    <string name="packs_install_zip">تثبيت حزمة من ملف .zip…</string>
+    <string name="packs_install_zip_hint">ملف .zip يحتوي على مجلد content الخاص بالحزمة</string>
+    <string name="packs_installing">جارٍ تثبيت حزمة المحتوى…</string>
+    <string name="packs_failed">تعذّر تثبيت الحزمة: %1$s</string>
+    <string name="packs_not_found">لا يوجد مجلد content في تلك الحزمة (حزم المحتوى من Cemu فقط هي المدعومة، لا تصحيحات الشيفرة).</string>
+    <string name="packs_remove">إزالة %1$s</string>
+</resources>
