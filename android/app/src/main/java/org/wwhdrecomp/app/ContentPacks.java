@@ -156,7 +156,7 @@ final class ContentPacks {
             Backup.deleteTree(tmp);
             return c.getString(R.string.packs_not_found);
         }
-        String folder = (label[0].isEmpty() ? treeName(cr, tree) : label[0]).replaceAll("[^A-Za-z0-9 ._()-]", "_").trim();
+        String folder = (label[0].isEmpty() ? treeName(cr, tree) : label[0]).replaceAll("[^\\p{L}\\p{N} ._()-]", "_").trim();
         if (folder.isEmpty() || folder.startsWith(".")) folder = "pack";
         File dest = new File(root, folder);
         Backup.deleteTree(dest);
@@ -166,6 +166,7 @@ final class ContentPacks {
 
     /**
      * Extracts the content/ files found inside a .zip archive into files/mods/packs/<name>.
+     * Returns null, or why not.
      */
     static String installZip(Context c, Uri zipUri, File base) {
         ContentResolver cr = c.getContentResolver();
@@ -176,11 +177,20 @@ final class ContentPacks {
         int copied = 0;
         String label = "";
 
-        try (InputStream in = cr.openInputStream(zipUri);
-             ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
-            if (in == null) return "cannot read zip";
+        InputStream in;
+        try {
+            in = cr.openInputStream(zipUri);
+        } catch (Exception e) {
+            Backup.deleteTree(tmp);
+            return e.getMessage() != null ? e.getMessage() : e.toString();
+        }
+        if (in == null) {
+            Backup.deleteTree(tmp);
+            return "cannot read zip";
+        }
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
+            String safeRoot = new File(tmp, "content").getCanonicalPath() + File.separator;
             ZipEntry entry;
-            byte[] buf = new byte[1 << 16];
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.isDirectory()) {
                     zis.closeEntry();
@@ -189,6 +199,11 @@ final class ContentPacks {
                 String entryName = entry.getName().replace('\\', '/');
                 String[] parts = entryName.split("/");
                 String fileName = parts[parts.length - 1];
+                // archives made on a Mac carry __MACOSX/ and ._ files: not part of the pack
+                if (entryName.startsWith("__MACOSX/") || entryName.contains("/__MACOSX/") || fileName.startsWith("._")) {
+                    zis.closeEntry();
+                    continue;
+                }
 
                 int ci = -1;
                 for (int k = 0; k < parts.length - 1; k++) {
@@ -199,35 +214,28 @@ final class ContentPacks {
                 }
 
                 if (ci >= 0) {
-                    StringBuilder rel = new StringBuilder("content");
-                    for (int k = ci + 1; k < parts.length; k++) {
-                        rel.append("/").append(parts[k]);
-                    }
-                    File out = new File(tmp, rel.toString());
-                    if (!out.getCanonicalPath().startsWith(tmp.getCanonicalPath() + File.separator)) {
-                        throw new SecurityException("Invalid zip path");
+                    File out = new File(tmp, "content/" + String.join("/", Arrays.copyOfRange(parts, ci + 1, parts.length)));
+                    // Zip Slip: a path leaving content/ (../) is skipped, not written
+                    if (!out.getCanonicalPath().startsWith(safeRoot)) {
+                        zis.closeEntry();
+                        continue;
                     }
                     if (!out.exists()) {
+                        //noinspection ResultOfMethodCallIgnored
                         out.getParentFile().mkdirs();
-                        try (OutputStream fos = new FileOutputStream(out)) {
-                            int n;
-                            while ((n = zis.read(buf)) > 0) fos.write(buf, 0, n);
-                        }
+                        copyStream(zis, out);
                         copied++;
                     }
                 } else if (fileName.equalsIgnoreCase("rules.txt") && label.isEmpty()) {
                     File out = new File(tmp, "rules.txt");
-                    try (OutputStream fos = new FileOutputStream(out)) {
-                        int n;
-                        while ((n = zis.read(buf)) > 0) fos.write(buf, 0, n);
-                    }
+                    copyStream(zis, out);
                     label = name(tmp);
                 }
                 zis.closeEntry();
             }
         } catch (Exception e) {
             Backup.deleteTree(tmp);
-            return e.getMessage();
+            return e.getMessage() != null ? e.getMessage() : e.toString();
         }
 
         if (copied == 0) {
@@ -242,12 +250,20 @@ final class ContentPacks {
             }
         } catch (Exception ignored) {}
 
-        String folder = (label.isEmpty() ? zipName : label).replaceAll("[^A-Za-z0-9 ._()-]", "_").trim();
+        String folder = (label.isEmpty() ? zipName : label).replaceAll("[^\\p{L}\\p{N} ._()-]", "_").trim();
         if (folder.isEmpty() || folder.startsWith(".")) folder = "pack";
         File dest = new File(root, folder);
         Backup.deleteTree(dest);
         if (!tmp.renameTo(dest)) return "cannot move the pack into place";
         return null;
+    }
+
+    // writes the current zip entry to `to` (the stream stays open for the next entry)
+    private static void copyStream(InputStream in, File to) throws IOException {
+        try (OutputStream out = new FileOutputStream(to)) {
+            byte[] buf = new byte[1 << 16];
+            for (int n; (n = in.read(buf)) > 0; ) out.write(buf, 0, n);
+        }
     }
 
     private static String treeName(ContentResolver cr, Uri tree) {

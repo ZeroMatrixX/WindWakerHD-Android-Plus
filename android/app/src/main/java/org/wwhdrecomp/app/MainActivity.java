@@ -2209,7 +2209,7 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
     // the menus' size, on top of fitting them to the screen (GameUi.fitted)
     static final float[] MENU_SIZES = {0.7f, 0.8f, 0.9f, 1f, 1.15f, 1.3f};
 
-    static final int PICK_EXPORT = 2, PICK_IMPORT = 3, PICK_DISC = 4, PICK_TRANSLATION = 5, PICK_PACK = 11;
+    static final int PICK_EXPORT = 2, PICK_IMPORT = 3, PICK_DISC = 4, PICK_TRANSLATION = 5, PICK_PACK = 11, PICK_PACK_ZIP = 12;
     private boolean exportSave = true, exportStates = true;
 
     void chooseExport() {
@@ -2227,6 +2227,14 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
                     exportStates = checked[1];
                     if (exportSave || exportStates) pickFolder(PICK_EXPORT);
                 }).show();
+    }
+
+    /** a file picker (all types: some devices hide .zip files when the type is given) */
+    void pickZip(int request) {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        startActivityForResult(i, request);
     }
 
     void pickFolder(int request) {
@@ -2343,6 +2351,17 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
             withProgress(R.string.packs_installing, () -> ContentPacks.install(this, tree, baseDir()), err -> {
                 if (err != null) {
                     new GameDialog(this).title(R.string.opt_packs).message(getString(R.string.packs_failed, err)).button(R.string.opt_ok, null).show();
+                    return;
+                }
+                askRestart(R.string.opt_packs);
+            });
+            return;
+        }
+        if (request == PICK_PACK_ZIP && result == RESULT_OK && data != null && data.getData() != null) {
+            android.net.Uri zip = data.getData();
+            withProgress(R.string.packs_installing, () -> ContentPacks.installZip(this, zip, baseDir()), err -> {
+                if (err != null) {
+                    new GameDialog(this).title(R.string.opt_packs).message(getString(R.string.packs_failed, err.startsWith("!") ? err.substring(1) : err)).button(R.string.opt_ok, null).show();
                     return;
                 }
                 askRestart(R.string.opt_packs);

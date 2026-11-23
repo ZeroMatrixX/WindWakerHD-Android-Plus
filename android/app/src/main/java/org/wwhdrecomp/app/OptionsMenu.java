@@ -633,6 +633,7 @@ final class OptionsMenu extends Dialog {
                         }).show());
         }
         submenu(R.string.packs_install, R.string.packs_install_hint, "", () -> a.pickFolder(MainActivity.PICK_PACK));
+        submenu(R.string.packs_install_zip, R.string.packs_install_zip_hint, "", () -> a.pickZip(MainActivity.PICK_PACK_ZIP));
     }
 
     // the Brazilian Portuguese fan translation (Translation.java)
