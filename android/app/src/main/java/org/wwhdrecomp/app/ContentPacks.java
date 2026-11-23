@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
+import android.provider.OpenableColumns;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,16 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-/**
- * Content packs: Cemu graphic packs (or any folder) whose content/ files replace the game's (models,
- * textures, layouts, messages: the Linkle mod, a translation...). The game reads a pack's file instead
- * of its own when the pack has it (runtime/src/hle/fs.cpp, content overlays); Cemu's code patches
- * (patches.txt) can't apply to recompiled code and are left out. Packs live in files/mods/packs/<name>
- * (installed from a folder the user chooses) and, with "All files access", in the "WindWakerHD Plus/Mods"
- * folder, where they can be copied with any file manager. Each can be turned off; the ones listed first
- * (by name) win over the others and over the translation.
- */
 final class ContentPacks {
     private ContentPacks() {}
 
@@ -59,7 +54,6 @@ final class ContentPacks {
         return out;
     }
 
-    // the folder with content/ in it: the pack's own, or one level down (a zip unpacked into a folder)
     private static File contentHolder(File d, int depth) {
         File[] kids = d.listFiles(File::isDirectory);
         if (kids == null) return null;
@@ -73,7 +67,6 @@ final class ContentPacks {
         return null;
     }
 
-    // rules.txt's name = "..." (Cemu), else the folder's
     private static String name(File d) {
         for (File f : new File[] {new File(d, "rules.txt"), new File(d, "label.txt")}) {
             if (!f.exists()) continue;
@@ -127,7 +120,6 @@ final class ContentPacks {
 
     /**
      * Copies the content/ files found under `tree` (a pack the user chose) into files/mods/packs/<name>.
-     * Returns null, or why not.
      */
     static String install(Context c, Uri tree, File base) {
         ContentResolver cr = c.getContentResolver();
@@ -165,6 +157,92 @@ final class ContentPacks {
             return c.getString(R.string.packs_not_found);
         }
         String folder = (label[0].isEmpty() ? treeName(cr, tree) : label[0]).replaceAll("[^A-Za-z0-9 ._()-]", "_").trim();
+        if (folder.isEmpty() || folder.startsWith(".")) folder = "pack";
+        File dest = new File(root, folder);
+        Backup.deleteTree(dest);
+        if (!tmp.renameTo(dest)) return "cannot move the pack into place";
+        return null;
+    }
+
+    /**
+     * Extracts the content/ files found inside a .zip archive into files/mods/packs/<name>.
+     */
+    static String installZip(Context c, Uri zipUri, File base) {
+        ContentResolver cr = c.getContentResolver();
+        File root = installDir(base);
+        File tmp = new File(root, ".part");
+        Backup.deleteTree(tmp);
+        if (!new File(tmp, "content").mkdirs()) return "cannot create " + tmp;
+        int copied = 0;
+        String label = "";
+
+        try (InputStream in = cr.openInputStream(zipUri);
+             ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
+            if (in == null) return "cannot read zip";
+            ZipEntry entry;
+            byte[] buf = new byte[1 << 16];
+            while ((entry = zis.getNextEntry()) != null) {
+                if (entry.isDirectory()) {
+                    zis.closeEntry();
+                    continue;
+                }
+                String entryName = entry.getName().replace('\\', '/');
+                String[] parts = entryName.split("/");
+                String fileName = parts[parts.length - 1];
+
+                int ci = -1;
+                for (int k = 0; k < parts.length - 1; k++) {
+                    if (parts[k].equalsIgnoreCase("content")) {
+                        ci = k;
+                        break;
+                    }
+                }
+
+                if (ci >= 0) {
+                    StringBuilder rel = new StringBuilder("content");
+                    for (int k = ci + 1; k < parts.length; k++) {
+                        rel.append("/").append(parts[k]);
+                    }
+                    File out = new File(tmp, rel.toString());
+                    if (!out.getCanonicalPath().startsWith(tmp.getCanonicalPath() + File.separator)) {
+                        throw new SecurityException("Invalid zip path");
+                    }
+                    if (!out.exists()) {
+                        out.getParentFile().mkdirs();
+                        try (OutputStream fos = new FileOutputStream(out)) {
+                            int n;
+                            while ((n = zis.read(buf)) > 0) fos.write(buf, 0, n);
+                        }
+                        copied++;
+                    }
+                } else if (fileName.equalsIgnoreCase("rules.txt") && label.isEmpty()) {
+                    File out = new File(tmp, "rules.txt");
+                    try (OutputStream fos = new FileOutputStream(out)) {
+                        int n;
+                        while ((n = zis.read(buf)) > 0) fos.write(buf, 0, n);
+                    }
+                    label = name(tmp);
+                }
+                zis.closeEntry();
+            }
+        } catch (Exception e) {
+            Backup.deleteTree(tmp);
+            return e.getMessage();
+        }
+
+        if (copied == 0) {
+            Backup.deleteTree(tmp);
+            return c.getString(R.string.packs_not_found);
+        }
+
+        String zipName = "pack";
+        try (Cursor cur = cr.query(zipUri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cur != null && cur.moveToFirst()) {
+                zipName = cur.getString(0).replaceFirst("(?i)\\.zip$", "");
+            }
+        } catch (Exception ignored) {}
+
+        String folder = (label.isEmpty() ? zipName : label).replaceAll("[^A-Za-z0-9 ._()-]", "_").trim();
         if (folder.isEmpty() || folder.startsWith(".")) folder = "pack";
         File dest = new File(root, folder);
         Backup.deleteTree(dest);
