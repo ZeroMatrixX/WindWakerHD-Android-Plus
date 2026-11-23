@@ -66,8 +66,9 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
     private boolean autoHidden;
     private int surfaceW, surfaceH;
 
-    // the app's own language (Game › App language): 0 the system's, 1 English, 2 Portuguese (Brazil)
-    static final String[] APP_LOCALES = {"", "en", "pt-BR", "es"};
+    // the app's own language (Game › App language): 0 the system's, 1 English, 2 Portuguese (Brazil), 3 Spanish,
+    // 4 Arabic (Latin digits, so the numbers match the rest of the menu)
+    static final String[] APP_LOCALES = {"", "en", "pt-BR", "es", "ar-u-nu-latn"};
 
     static Context withAppLanguage(Context base) {
         int l = base.getSharedPreferences(PREFS, MODE_PRIVATE).getInt("app_language", 0);

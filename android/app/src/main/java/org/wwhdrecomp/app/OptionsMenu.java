@@ -86,6 +86,12 @@ final class OptionsMenu extends Dialog {
         FrameLayout.LayoutParams plp = new FrameLayout.LayoutParams(-1, -1);
         plp.setMargins(px(26), px(18), px(26), px(18));
         root.addView(panel, plp);
+        // The layout stays left-to-right in every language; only the text itself follows its language
+        // (Arabic reads right-to-left and is right-aligned inside its row).
+        root.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+        // (the app's own language lives in the activity's configuration, not in Locale.getDefault())
+        boolean rtlText = a.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        root.setTextDirection(rtlText ? View.TEXT_DIRECTION_RTL : View.TEXT_DIRECTION_FIRST_STRONG);
 
         // tabs and Back
         LinearLayout top = new LinearLayout(getContext());
@@ -206,6 +212,7 @@ final class OptionsMenu extends Dialog {
     private void pageTitle(int title) {
         TextView t = new TextView(getContext());
         t.setText("‹  " + a.getString(title));
+        t.setTextDirection(View.TEXT_DIRECTION_LTR);  // the back arrow stays on the left, unmirrored
         t.setTextColor(INK);
         t.setTextSize(20);
         t.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
@@ -887,6 +894,7 @@ final class OptionsMenu extends Dialog {
             LinearLayout r = rowText(names[i], null);
             TextView v = new TextView(getContext());
             v.setText(InputMapper.buttonName(getContext(), m.map[i]) + "  ›");
+            v.setTextDirection(View.TEXT_DIRECTION_LTR);  // the arrow stays on the right, unmirrored
             v.setTextColor(INK);
             v.setTextSize(16);
             v.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
@@ -930,13 +938,13 @@ final class OptionsMenu extends Dialog {
         t.setTextColor(INK);
         t.setTextSize(18);
         t.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-        text.addView(t);
+        text.addView(t, new LinearLayout.LayoutParams(-1, -2));
         if (hint != null) {
             TextView h = new TextView(getContext());
             h.setText(hint);
             h.setTextColor(HINT);
             h.setTextSize(13);
-            text.addView(h);
+            text.addView(h, new LinearLayout.LayoutParams(-1, -2));
         }
         r.addView(text, new LinearLayout.LayoutParams(0, -2, 1));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
@@ -999,6 +1007,7 @@ final class OptionsMenu extends Dialog {
         LinearLayout r = row(label, hint);
         TextView v = new TextView(getContext());
         v.setText(value.isEmpty() ? "›" : value + "  ›");
+        v.setTextDirection(View.TEXT_DIRECTION_LTR);  // the arrow stays on the right, unmirrored
         v.setTextColor(INK);
         v.setTextSize(16);
         v.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
