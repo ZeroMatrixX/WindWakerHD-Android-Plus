@@ -83,15 +83,34 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
     protected void attachBaseContext(Context base) { super.attachBaseContext(withAppLanguage(base)); }
 
     /** after App language changed: this activity's resources in the new language, the menu opened again */
-    @SuppressWarnings("deprecation")
     void recreateUi() {
-        int l = prefs.getInt("app_language", 0);
-        android.content.res.Configuration cfg = new android.content.res.Configuration(getResources().getConfiguration());
-        cfg.setLocale(l > 0 && l < APP_LOCALES.length ? java.util.Locale.forLanguageTag(APP_LOCALES[l])
-                : android.content.res.Resources.getSystem().getConfiguration().getLocales().get(0));
-        getResources().updateConfiguration(cfg, getResources().getDisplayMetrics());
+        applyAppLanguage();
         if (controls != null) controls.invalidate();
         new OptionsMenu(this).show();
+    }
+
+    /**
+     * Puts this activity's resources in the chosen App language. The system replaces the resources'
+     * configuration (with its own language) whenever it reports a configuration change that this activity
+     * handles itself (see configChanges in the manifest), e.g. when the app comes back from the background;
+     * so this is applied again then (onConfigurationChanged, onResume), only when the language differs.
+     */
+    @SuppressWarnings("deprecation")
+    private void applyAppLanguage() {
+        if (prefs == null) return;
+        int l = prefs.getInt("app_language", 0);
+        java.util.Locale want = l > 0 && l < APP_LOCALES.length ? java.util.Locale.forLanguageTag(APP_LOCALES[l])
+                : android.content.res.Resources.getSystem().getConfiguration().getLocales().get(0);
+        android.content.res.Configuration cfg = new android.content.res.Configuration(getResources().getConfiguration());
+        if (want.equals(cfg.getLocales().get(0))) return;
+        cfg.setLocale(want);
+        getResources().updateConfiguration(cfg, getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        applyAppLanguage();
     }
 
     @Override
@@ -1547,6 +1566,7 @@ public final class MainActivity extends Activity implements SurfaceHolder.Callba
     @Override
     protected void onResume() {
         super.onResume();
+        applyAppLanguage();
         resumed = true;
         if (rotationGuard == null) rotationGuard = new RotationGuard(this, prefs);
         rotationGuard.onResume();
